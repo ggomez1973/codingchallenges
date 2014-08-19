@@ -1,4 +1,4 @@
-// Linked List Length
+// Linked List Length Codility PtrListLen
 
 var LL = {
 	value : 'A',
