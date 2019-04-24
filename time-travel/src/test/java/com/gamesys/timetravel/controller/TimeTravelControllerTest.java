@@ -4,16 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.After;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
@@ -22,7 +21,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class TimeTravelControllerTest {
 
     private MockMvc mockMvc;
@@ -35,39 +33,51 @@ public class TimeTravelControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @Test
+    public void saveTravelForCharacter_WithInvalidPgi() throws Exception {
+        TravelValueObject vo = new TravelValueObject("london", LocalDateTime.now());
+        String requestJson = convertJSONBodyToString(vo);
+        String errorMessage = mockMvc.perform(post(TimeTravelController.BASE_URL+"/{pgi}/travels", "2Invalid")
+                .content(requestJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResolvedException().getMessage();
+        Assert.assertEquals("Invalid Personal Galactic Identifier", errorMessage);
     }
 
     @Test
-    public void saveTravelForCharacterWithNoTravel() throws Exception {
-        mockMvc.perform(post("/api/v1/travels"))
-                .andExpect(status().isUnsupportedMediaType());
+    public void saveTravelForCharacter_WithInvalidPlace() throws Exception {
+        TravelValueObject vo = new TravelValueObject("", LocalDateTime.now());
+        String requestJson = convertJSONBodyToString(vo);
+        System.out.println(requestJson);
+        String errorMessage = mockMvc.perform(post(TimeTravelController.BASE_URL+"/{pgi}/travels", "aValidPgi")
+                .content(requestJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResolvedException().getMessage();
+        Assert.assertEquals("No such place", errorMessage);
     }
 
     @Test
-    public void saveTravelForCharacterWithEmptyTravel() throws Exception {
-        TravelValueObject vo = new TravelValueObject();
-        String requestJson = getJSONRequest(vo);
-        mockMvc.perform(post("/api/v1/travels")
+    public void saveTravelForCharacter_WithNullDate() throws Exception {
+        TravelValueObject vo = new TravelValueObject("london", null);
+        String requestJson = convertJSONBodyToString(vo);
+        mockMvc.perform(post(TimeTravelController.BASE_URL+"/aValidPgi/travels")
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isUnsupportedMediaType());
     }
 
-    @Test
-    public void saveTravelForCharacterWithInvalidPgi() throws Exception {
-       // TravelValueObject vo = new TravelValueObject("", "london", "2019-04-23T18:28:52.036Z");
-        TravelValueObject vo = new TravelValueObject("", "london", LocalDateTime.now());
-        String requestJson = getJSONRequest(vo);
-        mockMvc.perform(post("/api/v1/travels")
-                .content(requestJson)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
-    }
-
-    private String getJSONRequest(TravelValueObject vo) throws JsonProcessingException {
+    /**
+     * Conversion Utility
+     * @param vo A Travel value object
+     * @return  A String representation fromValueObject the JSON object
+     * @throws JsonProcessingException
+     */
+    private String convertJSONBodyToString(TravelValueObject vo) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         return ow.writeValueAsString(vo);
     }

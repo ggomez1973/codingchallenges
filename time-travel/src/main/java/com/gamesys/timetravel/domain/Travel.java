@@ -2,6 +2,7 @@ package com.gamesys.timetravel.domain;
 
 import com.gamesys.timetravel.controller.TravelValueObject;
 import com.gamesys.timetravel.error.InvalidPersonalGalacticIdentifierException;
+import com.gamesys.timetravel.error.NoSuchPlaceException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,31 +22,42 @@ public final class Travel {
         this.date = date;
     }
 
-    public static Travel createTravel(String pgi, String place, LocalDateTime date) throws InvalidPersonalGalacticIdentifierException {
-        Objects.requireNonNull(pgi, "pgi");
-        Objects.requireNonNull(place, "place");
-        Objects.requireNonNull(date, "date");
-        Pattern pattern = Pattern.compile(pgi_format_regex);
-        Matcher matcher = pattern.matcher(pgi);
-        if(matcher.matches()){
-            return new Travel(pgi, place, date);
+    public static Travel createTravel(String pgi, String place, LocalDateTime date) {
+        Objects.requireNonNull(pgi, "pgi should not be null");
+        Objects.requireNonNull(place, "place should not be null");
+        Objects.requireNonNull(date, "date should not be null");
+        if(isValidPgi(pgi)){
+            if(!place.isEmpty()) {
+                return new Travel(pgi, place, date);
+            } else {
+                throw new NoSuchPlaceException();
+            }
         } else {
             throw new InvalidPersonalGalacticIdentifierException();
         }
     }
 
+    public static boolean isValidPgi(String pgi) {
+        Objects.requireNonNull(pgi, "pgi should not be null");
+        Pattern pattern = Pattern.compile(pgi_format_regex);
+        Matcher matcher = pattern.matcher(pgi);
+        return matcher.matches();
+    }
+
     /**
-     * TravelValueObject to Travel converter.
+     * TravelValueObject toValueObject Travel converter.
      * @param  valueObject
      * @return Travel
      */
-    public static Travel of(TravelValueObject valueObject) {
+    public static Travel fromValueObject(String pgi, TravelValueObject valueObject) {
+        Objects.requireNonNull(pgi, "pgi should not be null");
+        Objects.requireNonNull(pgi, "valueObject should not be null");
         //LocalDateTime date = LocalDateTime.parse(valueObject.getDate(), DateTimeFormatter.ISO_DATE_TIME);
-        return createTravel(valueObject.getPgi(),valueObject.getPlace(), valueObject.getDate());
+        return createTravel(pgi,valueObject.getPlace(), valueObject.getDate());
     }
 
-    public TravelValueObject to() {
-        return new TravelValueObject(pgi, place, date);
+    public final TravelValueObject toValueObject() {
+        return new TravelValueObject(place, date);
     }
 
     @Override
