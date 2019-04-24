@@ -1,6 +1,7 @@
 package com.gamesys.timetravel.domain;
 
 import com.gamesys.timetravel.controller.TravelValueObject;
+import com.gamesys.timetravel.error.InvalidPersonalGalacticIdentifierException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Travel {
-    private static final String regex = "^\\D{1}\\w{4,9}";
+    private static final String pgi_format_regex = "^\\D{1}\\w{4,9}";
     private final String pgi;
     private final String place;
     private final LocalDateTime date;
@@ -24,7 +25,7 @@ public final class Travel {
         Objects.requireNonNull(pgi, "pgi");
         Objects.requireNonNull(place, "place");
         Objects.requireNonNull(date, "date");
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = Pattern.compile(pgi_format_regex);
         Matcher matcher = pattern.matcher(pgi);
         if(matcher.matches()){
             return new Travel(pgi, place, date);
@@ -33,9 +34,18 @@ public final class Travel {
         }
     }
 
+    /**
+     * TravelValueObject to Travel converter.
+     * @param  valueObject
+     * @return Travel
+     */
     public static Travel of(TravelValueObject valueObject) {
-        LocalDateTime date = LocalDateTime.parse(valueObject.getDate(), DateTimeFormatter.ISO_DATE_TIME);
-        return createTravel(valueObject.getPgi(),valueObject.getPlace(), date);
+        //LocalDateTime date = LocalDateTime.parse(valueObject.getDate(), DateTimeFormatter.ISO_DATE_TIME);
+        return createTravel(valueObject.getPgi(),valueObject.getPlace(), valueObject.getDate());
+    }
+
+    public TravelValueObject to() {
+        return new TravelValueObject(pgi, place, date);
     }
 
     @Override

@@ -12,7 +12,7 @@
 	<artifactId>time-travel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>time-travel</name>
-	<description>Demo project for Gamesys</description>
+	<description>Coding challenge for Gamesys</description>
 
 	<properties>
 		<java.version>1.8</java.version>

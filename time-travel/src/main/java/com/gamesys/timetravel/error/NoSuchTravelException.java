@@ -1,4 +1,4 @@
-package com.gamesys.timetravel.controller.exceptions;
+package com.gamesys.timetravel.error;
 
 public class NoSuchTravelException extends RuntimeException {
 }

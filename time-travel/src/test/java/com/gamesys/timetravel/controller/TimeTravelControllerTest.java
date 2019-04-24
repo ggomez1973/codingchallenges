@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,7 +57,8 @@ public class TimeTravelControllerTest {
 
     @Test
     public void saveTravelForCharacterWithInvalidPgi() throws Exception {
-        TravelValueObject vo = new TravelValueObject("", "london", "2019-04-23T18:28:52.036Z");
+       // TravelValueObject vo = new TravelValueObject("", "london", "2019-04-23T18:28:52.036Z");
+        TravelValueObject vo = new TravelValueObject("", "london", LocalDateTime.now());
         String requestJson = getJSONRequest(vo);
         mockMvc.perform(post("/api/v1/travels")
                 .content(requestJson)

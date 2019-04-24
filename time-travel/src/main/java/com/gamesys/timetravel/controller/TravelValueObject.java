@@ -1,14 +1,19 @@
 package com.gamesys.timetravel.controller;
 
+import java.time.LocalDateTime;
+
+/**
+ * Value Object to prevent exposing domain objects
+ */
 public class TravelValueObject {
     private String pgi;
     private String place;
-    private String date;
+    private LocalDateTime date;
 
     public TravelValueObject() {
     }
 
-    public TravelValueObject(String pgi, String place, String date) {
+    public TravelValueObject(String pgi, String place, LocalDateTime date) {
         this.pgi = pgi;
         this.place = place;
         this.date = date;
@@ -30,11 +35,11 @@ public class TravelValueObject {
         this.place = place;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 }

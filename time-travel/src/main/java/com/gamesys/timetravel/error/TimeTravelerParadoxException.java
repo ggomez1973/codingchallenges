@@ -1,4 +1,4 @@
-package com.gamesys.timetravel.repository;
+package com.gamesys.timetravel.error;
 
 public class TimeTravelerParadoxException extends RuntimeException {
     public TimeTravelerParadoxException() {

@@ -1,15 +1,16 @@
 package com.gamesys.timetravel.controller;
 
-import com.gamesys.timetravel.controller.exceptions.NoSuchTravelException;
-import com.gamesys.timetravel.domain.InvalidPersonalGalacticIdentifierException;
+import com.gamesys.timetravel.error.NoSuchTravelException;
+import com.gamesys.timetravel.error.InvalidPersonalGalacticIdentifierException;
 import com.gamesys.timetravel.domain.Travel;
 import com.gamesys.timetravel.repository.TravelRepository;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(TimeTravelController.BASE_URL)
@@ -23,11 +24,11 @@ public class TimeTravelController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Travel saveTravelForCharacter(@RequestBody TravelValueObject valueObject){
+    public TravelValueObject saveTravelForCharacter(@RequestBody TravelValueObject travelVO){
         try {
-            Travel travel = Travel.of(valueObject);
+            Travel travel = Travel.of(travelVO);
             repository.saveTravelForCharacter(travel);
-            return travel;
+            return travelVO;
         } catch (InvalidPersonalGalacticIdentifierException e) {
             logger.info(e.getMessage());
             // Bad Request
@@ -35,9 +36,10 @@ public class TimeTravelController {
         }
     }
 
-    @GetMapping("/{id}")
-    public Set<Travel> getTravelForCharacter(@PathVariable String id){
-        return repository.getTravelsForCharacter(id).orElseThrow(() -> new NoSuchTravelException());
+    @GetMapping(value = "/{pgi}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<TravelValueObject> getTravelsForCharacter(@PathVariable String pgi){
+        Set<Travel> st = repository.getTravelsForCharacter(pgi).orElseThrow(() -> new NoSuchTravelException());
+        return st.stream().map(travel -> travel.to()).collect(Collectors.toList());
     }
 
 }

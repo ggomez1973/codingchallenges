@@ -1,6 +1,7 @@
 package com.gamesys.timetravel.repository;
 
 import com.gamesys.timetravel.domain.Travel;
+import com.gamesys.timetravel.error.TimeTravelerParadoxException;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;

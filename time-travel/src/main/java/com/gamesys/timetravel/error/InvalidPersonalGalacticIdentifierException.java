@@ -1,4 +1,4 @@
-package com.gamesys.timetravel.domain;
+package com.gamesys.timetravel.error;
 
 public class InvalidPersonalGalacticIdentifierException extends RuntimeException {
     public InvalidPersonalGalacticIdentifierException() {
