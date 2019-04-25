@@ -1,2 +1,2 @@
-Several coding challenges from Hackerrank and other places.
+Coding challenges from Hackerrank and other places.
 ============
