@@ -14,19 +14,19 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public final class InMemoryTravelRepository implements TravelRepository {
 
-    private ConcurrentHashMap<String, Set<Travel>> travels;
+    private ConcurrentHashMap<String, Set<Travel>> travels = new ConcurrentHashMap<>();
 
     private InMemoryTravelRepository() {
-        this.travels = new ConcurrentHashMap<>();
     }
 
     public static InMemoryTravelRepository createInMemoryTravelRepository() {
+
         return new InMemoryTravelRepository();
     }
 
     @Override
     public Optional<Set<Travel>> getTravelsForCharacter(String pgi){
-        Objects.requireNonNull(pgi, "pgi");
+        Objects.requireNonNull(pgi, "pgi should not be null");
         if(Travel.isValidPgi(pgi)) {
             return Optional.ofNullable(travels.get(pgi));
         } else {
@@ -36,15 +36,15 @@ public final class InMemoryTravelRepository implements TravelRepository {
 
     @Override
     public void saveTravelForCharacter(Travel travel) {
-        Objects.requireNonNull(travel, "travel");
+        Objects.requireNonNull(travel, "travel should not be null");
         Set<Travel> currentTravels = travels.get(travel.getPgi());
-        if(currentTravels == null){
+        if (currentTravels == null) {
             currentTravels = new HashSet<>();
             currentTravels.add(travel);
             travels.put(travel.getPgi(), currentTravels);
         } else {
             boolean successfullyAdded = currentTravels.add(travel);
-            if(!successfullyAdded) {
+            if (!successfullyAdded) {
                 throw new TimeTravelerParadoxException();
             }
         }

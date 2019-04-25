@@ -1,11 +1,14 @@
 package com.gamesys.timetravel.domain;
 
+import com.gamesys.timetravel.controller.TravelValueObject;
+import com.gamesys.timetravel.error.InvalidTravelDataException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -71,7 +74,16 @@ public class TravelTest {
     }
 
     @Test
-    public void fromValueObjectWithNull() {
-        Travel.fromValueObject(null, null);
+    public void fromValueObjectWithNullPgi() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("pgi should not be null");
+        Travel.fromValueObject(null, new TravelValueObject("place", LocalDateTime.now()));
+    }
+
+    @Test
+    public void fromValueObjectWithNullValueObject() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("valueObject should not be null");
+        Travel.fromValueObject("", null);
     }
 }

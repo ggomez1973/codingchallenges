@@ -1,10 +1,16 @@
 package com.gamesys.timetravel.controller;
 
-import com.gamesys.timetravel.error.NoSuchTravelerException;
 import com.gamesys.timetravel.domain.Travel;
+import com.gamesys.timetravel.error.NoSuchTravelerException;
 import com.gamesys.timetravel.repository.TravelRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Set;
@@ -14,11 +20,9 @@ import java.util.stream.Collectors;
 @RequestMapping(TimeTravelController.BASE_URL)
 public class TimeTravelController {
     public static final String BASE_URL = "/api/v1/travelers";
-    private final TravelRepository repository;
 
-    public TimeTravelController(TravelRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private TravelRepository repository;
 
     @PostMapping(value = "/{pgi}/travels", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public TravelValueObject saveTravelForCharacter(@PathVariable String pgi, @RequestBody TravelValueObject travelVO){

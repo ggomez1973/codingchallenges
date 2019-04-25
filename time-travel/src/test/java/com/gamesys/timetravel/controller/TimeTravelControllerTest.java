@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,12 +22,13 @@ import java.time.LocalDateTime;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
 @RunWith(SpringRunner.class)
 public class TimeTravelControllerTest {
 
     private MockMvc mockMvc;
 
-    @InjectMocks
+    @Autowired
     private TimeTravelController controller;
 
     @Before
@@ -49,7 +52,6 @@ public class TimeTravelControllerTest {
     public void saveTravelForCharacter_WithInvalidPlace() throws Exception {
         TravelValueObject vo = new TravelValueObject("", LocalDateTime.now());
         String requestJson = convertJSONBodyToString(vo);
-        System.out.println(requestJson);
         String errorMessage = mockMvc.perform(post(TimeTravelController.BASE_URL+"/{pgi}/travels", "aValidPgi")
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -59,13 +61,27 @@ public class TimeTravelControllerTest {
     }
 
     @Test
+    public void saveTravelForCharacter_WithNullPlace() throws Exception {
+        TravelValueObject vo = new TravelValueObject(null, LocalDateTime.now());
+        String requestJson = convertJSONBodyToString(vo);
+        String errorMessage = mockMvc.perform(post(TimeTravelController.BASE_URL+"/{pgi}/travels", "aValidPgi")
+                .content(requestJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResolvedException().getMessage();
+        Assert.assertEquals("place should not be null", errorMessage);
+    }
+
+    @Test
     public void saveTravelForCharacter_WithNullDate() throws Exception {
         TravelValueObject vo = new TravelValueObject("london", null);
         String requestJson = convertJSONBodyToString(vo);
-        mockMvc.perform(post(TimeTravelController.BASE_URL+"/aValidPgi/travels")
+        String errorMessage = mockMvc.perform(post(TimeTravelController.BASE_URL+"/aValidPgi/travels")
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isUnsupportedMediaType());
+                .andExpect(status().isBadRequest())
+                .andReturn().getResolvedException().getMessage();
+        Assert.assertEquals("date should not be null", errorMessage);
     }
 
     /**

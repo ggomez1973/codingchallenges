@@ -2,10 +2,10 @@ package com.gamesys.timetravel.domain;
 
 import com.gamesys.timetravel.controller.TravelValueObject;
 import com.gamesys.timetravel.error.InvalidPersonalGalacticIdentifierException;
+import com.gamesys.timetravel.error.InvalidTravelDataException;
 import com.gamesys.timetravel.error.NoSuchPlaceException;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +26,8 @@ public final class Travel {
         Objects.requireNonNull(pgi, "pgi should not be null");
         Objects.requireNonNull(place, "place should not be null");
         Objects.requireNonNull(date, "date should not be null");
-        if(isValidPgi(pgi)){
-            if(!place.isEmpty()) {
+        if (isValidPgi(pgi)) {
+            if (!place.isEmpty()) {
                 return new Travel(pgi, place, date);
             } else {
                 throw new NoSuchPlaceException();
@@ -44,16 +44,17 @@ public final class Travel {
         return matcher.matches();
     }
 
-    /**
-     * TravelValueObject toValueObject Travel converter.
-     * @param  valueObject
-     * @return Travel
-     */
     public static Travel fromValueObject(String pgi, TravelValueObject valueObject) {
-        Objects.requireNonNull(pgi, "pgi should not be null");
-        Objects.requireNonNull(pgi, "valueObject should not be null");
-        //LocalDateTime date = LocalDateTime.parse(valueObject.getDate(), DateTimeFormatter.ISO_DATE_TIME);
-        return createTravel(pgi,valueObject.getPlace(), valueObject.getDate());
+        Objects.requireNonNull(valueObject, "valueObject should not be null");
+        if (valueObject.getPlace() == null) {
+            throw new InvalidTravelDataException("place should not be null");
+        } else {
+            if (valueObject.getDate() == null) {
+                throw new InvalidTravelDataException("date should not be null");
+            } else {
+                return createTravel(pgi, valueObject.getPlace(), valueObject.getDate());
+            }
+        }
     }
 
     public final TravelValueObject toValueObject() {
@@ -85,14 +86,5 @@ public final class Travel {
 
     public LocalDateTime getDate() {
         return date;
-    }
-
-    @Override
-    public String toString() {
-        return "Travel{" +
-                "pgi='" + pgi + '\'' +
-                ", place='" + place + '\'' +
-                ", date=" + date +
-                '}';
     }
 }
