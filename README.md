@@ -1,4 +1,2 @@
-motherhacker
+Several coding challenges from Hackerrank and other places.
 ============
-
-I have my own reasons to do this...
