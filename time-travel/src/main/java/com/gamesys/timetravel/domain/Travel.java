@@ -45,6 +45,7 @@ public final class Travel {
     }
 
     public static Travel fromValueObject(String pgi, TravelValueObject valueObject) {
+        Objects.requireNonNull(pgi, "pgi should not be null");
         Objects.requireNonNull(valueObject, "valueObject should not be null");
         if (valueObject.getPlace() == null) {
             throw new InvalidTravelDataException("place should not be null");

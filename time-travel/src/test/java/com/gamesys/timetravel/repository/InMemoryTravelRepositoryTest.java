@@ -1,22 +1,20 @@
 package com.gamesys.timetravel.repository;
 
-import com.gamesys.timetravel.controller.TravelValueObject;
 import com.gamesys.timetravel.domain.Travel;
 import com.gamesys.timetravel.error.InvalidPersonalGalacticIdentifierException;
 import com.gamesys.timetravel.error.TimeTravelerParadoxException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 public class InMemoryTravelRepositoryTest {
 

@@ -1,16 +1,15 @@
 package com.gamesys.timetravel.domain;
 
 import com.gamesys.timetravel.controller.TravelValueObject;
-import com.gamesys.timetravel.error.InvalidTravelDataException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TravelTest {
     @Rule

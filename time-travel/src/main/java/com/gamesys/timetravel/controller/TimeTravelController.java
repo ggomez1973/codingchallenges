@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.gamesys.timetravel.domain.Travel.*;
+
 @RestController
 @RequestMapping(TimeTravelController.BASE_URL)
 public class TimeTravelController {
@@ -26,8 +28,7 @@ public class TimeTravelController {
 
     @PostMapping(value = "/{pgi}/travels", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public TravelValueObject saveTravelForCharacter(@PathVariable String pgi, @RequestBody TravelValueObject travelVO){
-        Travel travel = Travel.fromValueObject(pgi, travelVO);
-        repository.saveTravelForCharacter(travel);
+        repository.saveTravelForCharacter(fromValueObject(pgi, travelVO));
         return travelVO;
     }
 
