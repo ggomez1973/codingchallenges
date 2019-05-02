@@ -1,4 +1,4 @@
-Gamesys Time Travel REST API
+Time Travel REST API
 
 General assumptions:
   - Any not empty String could be a valid place. "sed3332" could be a valid place somewhere in the universe.
