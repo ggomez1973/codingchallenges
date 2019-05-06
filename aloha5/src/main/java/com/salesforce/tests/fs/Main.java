@@ -12,13 +12,14 @@ public class Main {
         CommandManager manager = new CommandManager();
         manager.execute("pwd"); //  /home
         manager.execute("ls"); // ...
-//        manager.execute("mkdir yerbas"); // nada
-//        manager.execute("cd yerbas"); // nada
-//        manager.execute("ls"); // yerbas
-//        manager.execute("pwd"); // home/yerbas
-//        manager.execute("touch playadito.txt");
-//        manager.execute("ls");
-//        manager.execute("pwd");
-//        manager.execute("quit");
+        manager.execute("mkdir yerbas"); // nada
+        manager.execute("ls"); // ... yerbas
+        manager.execute("cd yerbas"); // nada
+        manager.execute("ls"); // ...
+        manager.execute("pwd"); // /home/yerbas
+        manager.execute("touch playadito.txt"); // nada
+        manager.execute("ls");
+        manager.execute("pwd");
+        manager.execute("quit");
     }
 }

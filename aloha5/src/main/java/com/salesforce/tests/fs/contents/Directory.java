@@ -1,7 +1,6 @@
 package com.salesforce.tests.fs.contents;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -9,16 +8,16 @@ public final class Directory {
 
     private final String name;
     private final Directory parent;
-    private final Set<File> subdirectories;
+    private final Set<Directory> subdirectories;
     private final Set<File> files;
 
-    public Directory(String name, Directory parent, Set<File> subdirectories, Set<File> files) {
-        this.name = name;
-        this.parent = parent;
-        this.subdirectories = (subdirectories != null) ? subdirectories : new HashSet<>();
-        this.files = (files!=null)? files : new HashSet<>();
+    private Directory(DirectoryBuilder builder) {
+        this.name = builder.name;
+        this.parent = builder.parent;
+        this.subdirectories = builder.subdirectories;
+        this.files = builder.files; 
     }
-
+    
     public String getName() {
         return name;
     }
@@ -32,7 +31,7 @@ public final class Directory {
         return "[" + name + ']';
     }
 
-    public Set<File> getSubdirectories() {
+    public Set<Directory> getSubdirectories() {
         return subdirectories;
     }
 
@@ -52,5 +51,38 @@ public final class Directory {
     @Override
     public int hashCode() {
         return Objects.hash(name, parent);
+    }
+
+    public static class DirectoryBuilder {
+        private String name; // requerido
+        private Directory parent;
+        private Set<Directory> subdirectories;
+        private Set<File> files;
+
+        public DirectoryBuilder(String name, Directory parent){
+            this.name = name;
+            this.parent = parent;
+            this.subdirectories = new HashSet<>();
+            this.files = new HashSet<>();
+        }
+    
+        public DirectoryBuilder withSubDiretories(Set<Directory> directories){
+            this.subdirectories = (directories != null) ? directories : new HashSet<>();
+            return this;
+        }
+
+        public DirectoryBuilder withFiles(Set<File> files){
+            this.files = (files!=null)? files : new HashSet<>();
+            return this;
+        }
+
+        public DirectoryBuilder withParent(Directory parent){
+            this.parent = parent;
+            return this;
+        }
+    
+        public Directory build() {
+            return new Directory(this);
+        }
     }
 }

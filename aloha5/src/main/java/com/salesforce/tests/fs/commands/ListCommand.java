@@ -1,5 +1,6 @@
 package com.salesforce.tests.fs.commands;
 
+import com.salesforce.tests.fs.cache.CommandManager;
 import com.salesforce.tests.fs.contents.Directory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,12 +16,12 @@ public final class ListCommand implements Command {
     }
 
     @Override
-    public void run() {
+    public void run(CommandManager manager) {
         if(!recursive.get()){
             System.out.println("...");
-            if(currentDir.getFiles()!=null) {
-                currentDir.getFiles().forEach(System.out::println);
-            }
+            currentDir.getSubdirectories().forEach(System.out::println);
+            currentDir.getFiles().forEach(System.out::println);
+        
         }
     }
 }

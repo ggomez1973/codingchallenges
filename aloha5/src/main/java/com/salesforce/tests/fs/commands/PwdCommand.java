@@ -1,5 +1,6 @@
 package com.salesforce.tests.fs.commands;
 
+import com.salesforce.tests.fs.cache.CommandManager;
 import com.salesforce.tests.fs.contents.Directory;
 
 public final class PwdCommand implements Command {
@@ -11,7 +12,7 @@ public final class PwdCommand implements Command {
     }
 
     @Override
-    public void run() {
+    public void run(CommandManager manager) {
         StringBuilder path = new StringBuilder();
         Directory dir = current;
         while(dir!=null){
